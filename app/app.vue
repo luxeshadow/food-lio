@@ -21,6 +21,22 @@ const menuColors = {
 </script>
 
 <style>
+button,
+a,
+[role="button"],
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+.menu-item {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+}
+
 html,
 body {
   min-height: 100%;
