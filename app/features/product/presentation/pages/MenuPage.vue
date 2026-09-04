@@ -1,10 +1,51 @@
 <script setup lang="ts">
-import { useMenu } from '../store/use_menu'
+import { useProduct } from '../store/use_product'
 import ProductCard from './ProductCard.vue'
 import ProductSkeleton from '../../../../core/components/ProductSkeleton.vue'
+import { Failure } from '../../../../core/errors/failure'
+import { ListProducts } from '../../application/usecase/list_products'
+import { ProductRepositoryImpl } from '../../data/repositories/product_repository_impl'
 
 const props = defineProps<{ category: string, categoryName: string }>()
-const { day, period, products, loading, error, isDailyMenu, loadProducts, updateProductInStore } = useMenu(toRef(props, 'category'))
+const {
+  selectedDay: day,
+  selectedPeriod: period,
+  selectedCategory,
+  products,
+  loading,
+  error,
+  setSelectedCategory,
+  setProducts,
+  setLoading,
+  setError,
+} = useProduct()
+const isDailyMenu = computed(() => selectedCategory.value === 'menu-du-jour')
+const listProducts = new ListProducts(new ProductRepositoryImpl())
+let requestNumber = 0
+
+async function loadProducts() {
+  const currentRequest = ++requestNumber
+  setLoading(true)
+  setError('')
+  const result = await listProducts.execute(isDailyMenu.value
+    ? { dayOfWeek: day.value, period: period.value }
+    : { category: selectedCategory.value })
+  if (currentRequest !== requestNumber) return
+  setLoading(false)
+  if (result instanceof Failure) {
+    setProducts([])
+    setError(result.message)
+    return
+  }
+  setProducts(result)
+}
+
+watch(() => props.category, (category) => {
+  setSelectedCategory(category)
+  void loadProducts()
+}, { immediate: true })
+watch([day, period], loadProducts)
+onBeforeUnmount(() => { requestNumber++ })
 const days = [
   { name: 'Lundi', short: 'Lun' }, { name: 'Mardi', short: 'Mar' },
   { name: 'Mercredi', short: 'Mer' }, { name: 'Jeudi', short: 'Jeu' },
@@ -47,13 +88,13 @@ const groups = computed(() => [
               <img :src="group.icon" alt="" class="w-6 h-6 object-contain">{{ group.title }}
             </h3>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <ProductCard v-for="product in group.products" :key="product.id" :product="product" @updated="updateProductInStore" />
+              <ProductCard v-for="product in group.products" :key="product.id" :product="product" />
             </div>
           </div>
         </template>
       </template>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <ProductCard v-for="product in products" :key="product.id" :product="product" @updated="updateProductInStore" />
+        <ProductCard v-for="product in products" :key="product.id" :product="product" />
       </div>
     </section>
 

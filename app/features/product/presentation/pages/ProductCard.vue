@@ -1,14 +1,114 @@
 <script setup lang="ts">
 import type { Product } from '../../domain/entities/product'
-import { useUpdateProduct } from '../store/use_update_product'
+import { useProduct } from '../store/use_product'
 import { AppColors } from '../../../../core/constants/app_colors'
+import { Failure } from '../../../../core/errors/failure'
+import { useToast } from '../../../../core/shared/use_toast'
+import { useSupabase } from '../../../../core/supabase/supabase'
+import { UpdateProduct } from '../../application/usecase/update_product'
+import { ProductRepositoryImpl } from '../../data/repositories/product_repository_impl'
 
 const props = defineProps<{ product: Product }>()
-const emit = defineEmits<{ updated: [product: Product] }>()
-const { editing, submitting, error, imageFile, imagePreview, form, open, close, selectImage, submit } = useUpdateProduct(
-  toRef(props, 'product'),
-  product => emit('updated', product),
-)
+const { productToEdit, setProductToEdit, updateProduct } = useProduct()
+const editing = computed(() => productToEdit.value?.id === props.product.id)
+const submitting = ref(false)
+const error = ref('')
+const imageFile = ref<File | null>(null)
+const imagePreview = ref('')
+const form = reactive({ name: '', description: '', price: '' as number | '', currency: '', isAvailable: true })
+const updateProductUseCase = new UpdateProduct(new ProductRepositoryImpl())
+const { showToast } = useToast()
+let previewUrl = ''
+
+function clearImagePreview() {
+  if (previewUrl) URL.revokeObjectURL(previewUrl)
+  previewUrl = ''
+  imagePreview.value = ''
+}
+
+function open() {
+  Object.assign(form, {
+    name: props.product.name,
+    description: props.product.description ?? '',
+    price: props.product.price ?? '',
+    currency: props.product.currency ?? '',
+    isAvailable: props.product.isAvailable,
+  })
+  imageFile.value = null
+  clearImagePreview()
+  error.value = ''
+  setProductToEdit(props.product)
+}
+
+function close() {
+  if (submitting.value) return
+  setProductToEdit(null)
+  clearImagePreview()
+}
+
+function selectImage(event: Event) {
+  imageFile.value = (event.target as HTMLInputElement).files?.[0] ?? null
+  clearImagePreview()
+  if (!imageFile.value) return
+  previewUrl = URL.createObjectURL(imageFile.value)
+  imagePreview.value = previewUrl
+}
+
+async function uploadImage() {
+  const file = imageFile.value
+  if (!file) return props.product.imagePath
+  if (!file.type.startsWith('image/')) throw new Error('Choisissez un fichier image.')
+  if (file.size > 5 * 1024 * 1024) throw new Error('L’image ne doit pas dépasser 5 Mo.')
+  const folders: Record<string, string> = {
+    nourriture: 'nouriture', nouriture: 'nouriture', dessert: 'desert', desert: 'desert',
+    boisson: 'boisson', 'fruit-de-mer': 'fruit_mere', 'fruits-de-mer': 'fruit_mere', fruit_mere: 'fruit_mere',
+  }
+  const slug = props.product.category?.slug ?? 'produits'
+  const folder = folders[slug] ?? slug.replace(/[^a-z0-9_-]/gi, '_')
+  const extension = file.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'webp'
+  const path = `${folder}/${crypto.randomUUID()}.${extension}`
+  const { error: uploadError } = await useSupabase().storage.from('media').upload(path, file, {
+    contentType: file.type,
+    upsert: false,
+  })
+  if (uploadError) throw uploadError
+  return path
+}
+
+async function submit() {
+  if (submitting.value) return
+  submitting.value = true
+  error.value = ''
+  try {
+    const result = await updateProductUseCase.execute({
+      id: props.product.id,
+      values: {
+        name: form.name,
+        description: form.description.trim() || null,
+        imagePath: await uploadImage(),
+        price: form.price === '' ? null : Number(form.price),
+        currency: form.currency.trim() || null,
+        isAvailable: form.isAvailable,
+      },
+    })
+    if (result instanceof Failure) {
+      error.value = result.message
+      showToast(result.message, 'fi-rr-cross-circle', 'error')
+      return
+    }
+    updateProduct(result)
+    setProductToEdit(null)
+    clearImagePreview()
+    showToast('Produit modifié avec succès.', 'fi-rr-check-circle', 'success')
+  } catch (cause) {
+    error.value = cause instanceof Error ? cause.message : 'Impossible de modifier le produit.'
+    showToast(error.value, 'fi-rr-cross-circle', 'error')
+  } finally {
+    submitting.value = false
+  }
+}
+
+onBeforeUnmount(clearImagePreview)
 const config = useRuntimeConfig()
 const imageFailed = ref(false)
 const imageUrl = computed(() => {
@@ -42,7 +142,7 @@ watch(imageUrl, () => { imageFailed.value = false })
     <div v-if="editing" class="product-edit-overlay" @click.self="close">
       <form class="product-edit-form" role="dialog" aria-modal="true" aria-labelledby="product-edit-title" @submit.prevent="submit">
         <div class="flex items-center justify-between gap-4 mb-5">
-          <h2 id="product-edit-title" class="text-xl font-bold flex items-center gap-2"><i class="fi fi-rr-edit"></i> Modifier le produit</h2>
+          <h2 id="product-edit-title" class="text-xl font-bold flex items-center gap-2"> Modifier le produit</h2>
           <button type="button" class="product-edit-close" aria-label="Fermer" @click="close">×</button>
         </div>
         <fieldset :disabled="submitting" class="space-y-4">

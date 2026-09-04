@@ -55,11 +55,13 @@ function selectCategory(category: string) {
 <template>
   <header class="app-header">
     <div class="brand">
-      <img :src="AppAsset.logo" alt="Logo RAN Restaurant" class="logo">
+      <div class="logo-frame">
+        <img :src="AppAsset.logo" alt="Logo RAN Restaurant" class="logo">
+      </div>
       <h1><span>-</span> Menu Digital</h1>
     </div>
 
-    <p style="margin-top: -1px;">Scannez le QR code pour consulter notre menu</p>
+    <p >Scannez le QR code pour consulter notre menu</p>
 
     <nav aria-label="Catégories du menu">
       <button
@@ -92,13 +94,26 @@ function selectCategory(category: string) {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 4px;
+}
+
+.logo-frame {
+  position: relative;
+  width: 105px;
+  height: 58px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  margin-right: -18px;
 }
 
 .logo {
-  width: 80px;
-  height: 80px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 105px;
+  height: 105px;
   object-fit: contain;
+  transform: translate(-50%, -50%) scale(1.45);
 }
 
 h1 {
@@ -171,12 +186,15 @@ button img {
     gap: 0;
   }
 
+  .logo-frame {
+    width: 125px;
+    height: 68px;
+    margin-right: -24px;
+  }
+
   .logo {
-    width: 150px;
-    height: 150px;
-    margin-top: -28px;
-    margin-right: -28px;
-    margin-bottom: -28px;
+    width: 65px;
+    height: 100px;
   }
 
   nav {

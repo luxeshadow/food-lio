@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useCreateProduct } from '../store/use_create_product'
+import { useProduct } from '../store/use_product'
 import { useCategories } from '../../../categorie/presentation/store/use_categories'
 
-const { form, imageFile, submitting, error, createdProduct, selectImage, submit } = useCreateProduct()
+const { form, imageFile, submitting, error, createdProduct, selectImage, submit } = useProduct()
 const { categories, error: categoryError, loadCategories } = useCategories()
 const loadingCategories = ref(true)
 async function refreshCategories() { loadingCategories.value = true; await loadCategories(); loadingCategories.value = false }
