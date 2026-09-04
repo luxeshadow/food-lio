@@ -11,6 +11,8 @@ export function useUpdateProduct(product: Ref<Product>, onUpdated: (product: Pro
   const submitting = ref(false)
   const error = ref('')
   const imageFile = ref<File | null>(null)
+  const imagePreview = ref('')
+  let previewUrl = ''
   const form = reactive({
     name: '',
     description: '',
@@ -21,6 +23,12 @@ export function useUpdateProduct(product: Ref<Product>, onUpdated: (product: Pro
   const updateProduct = new UpdateProduct(useProductRepository())
   const { showToast } = useToast()
 
+  function clearImagePreview() {
+    if (previewUrl) URL.revokeObjectURL(previewUrl)
+    previewUrl = ''
+    imagePreview.value = ''
+  }
+
   function open() {
     Object.assign(form, {
       name: product.value.name,
@@ -30,16 +38,25 @@ export function useUpdateProduct(product: Ref<Product>, onUpdated: (product: Pro
       isAvailable: product.value.isAvailable,
     })
     imageFile.value = null
+    clearImagePreview()
     error.value = ''
     editing.value = true
   }
 
   function close() {
-    if (!submitting.value) editing.value = false
+    if (!submitting.value) {
+      editing.value = false
+      clearImagePreview()
+    }
   }
 
   function selectImage(event: Event) {
     imageFile.value = (event.target as HTMLInputElement).files?.[0] ?? null
+    clearImagePreview()
+    if (imageFile.value) {
+      previewUrl = URL.createObjectURL(imageFile.value)
+      imagePreview.value = previewUrl
+    }
   }
 
   async function uploadImage() {
@@ -88,6 +105,7 @@ export function useUpdateProduct(product: Ref<Product>, onUpdated: (product: Pro
       }
       onUpdated(result)
       editing.value = false
+      clearImagePreview()
       showToast('Produit modifié avec succès.', 'fi-rr-check-circle', 'success')
     } catch (cause) {
       error.value = cause instanceof Error ? cause.message : 'Impossible de modifier le produit.'
@@ -97,5 +115,7 @@ export function useUpdateProduct(product: Ref<Product>, onUpdated: (product: Pro
     }
   }
 
-  return { editing, submitting, error, imageFile, form, open, close, selectImage, submit }
+  onBeforeUnmount(clearImagePreview)
+
+  return { editing, submitting, error, imageFile, imagePreview, form, open, close, selectImage, submit }
 }

@@ -5,7 +5,7 @@ import { AppColors } from '../../../../core/constants/app_colors'
 
 const props = defineProps<{ product: Product }>()
 const emit = defineEmits<{ updated: [product: Product] }>()
-const { editing, submitting, error, imageFile, form, open, close, selectImage, submit } = useUpdateProduct(
+const { editing, submitting, error, imageFile, imagePreview, form, open, close, selectImage, submit } = useUpdateProduct(
   toRef(props, 'product'),
   product => emit('updated', product),
 )
@@ -42,26 +42,34 @@ watch(imageUrl, () => { imageFailed.value = false })
     <div v-if="editing" class="product-edit-overlay" @click.self="close">
       <form class="product-edit-form" role="dialog" aria-modal="true" aria-labelledby="product-edit-title" @submit.prevent="submit">
         <div class="flex items-center justify-between gap-4 mb-5">
-          <h2 id="product-edit-title" class="text-xl font-bold">Modifier le produit</h2>
+          <h2 id="product-edit-title" class="text-xl font-bold flex items-center gap-2"><i class="fi fi-rr-edit"></i> Modifier le produit</h2>
           <button type="button" class="product-edit-close" aria-label="Fermer" @click="close">×</button>
         </div>
         <fieldset :disabled="submitting" class="space-y-4">
-          <div><label :for="`edit-name-${product.id}`" class="block font-medium mb-1">Nom *</label><input :id="`edit-name-${product.id}`" v-model="form.name" type="text" maxlength="160" required class="w-full border rounded-lg px-3 py-2"></div>
-          <div><label :for="`edit-description-${product.id}`" class="block font-medium mb-1">Description</label><textarea :id="`edit-description-${product.id}`" v-model="form.description" rows="3" maxlength="3000" class="w-full border rounded-lg px-3 py-2"></textarea></div>
+          <div><label :for="`edit-name-${product.id}`" class="product-field-label"><i class="fi fi-rr-text"></i> Nom *</label><input :id="`edit-name-${product.id}`" v-model="form.name" type="text" maxlength="160" required class="w-full border rounded-lg px-3 py-2"></div>
+          <div><label :for="`edit-description-${product.id}`" class="product-field-label"><i class="fi fi-rr-document"></i> Description</label><textarea :id="`edit-description-${product.id}`" v-model="form.description" rows="3" maxlength="3000" class="w-full border rounded-lg px-3 py-2"></textarea></div>
           <div>
-            <label :for="`edit-image-${product.id}`" class="block font-medium mb-1">Remplacer l’image</label>
-            <input :id="`edit-image-${product.id}`" type="file" accept="image/*" class="w-full border rounded-lg px-3 py-2" @change="selectImage">
-            <p v-if="imageFile" class="text-sm text-gray-600 mt-1">{{ imageFile.name }}</p>
+            <span class="product-field-label"><i class="fi fi-rr-picture"></i> Image du produit</span>
+            <label :for="`edit-image-${product.id}`" class="product-upload-zone">
+              <img v-if="imagePreview || imageUrl" :src="imagePreview || imageUrl" alt="Aperçu du produit" class="product-upload-preview">
+              <span class="product-upload-content">
+                <i class="fi fi-rr-cloud-upload-alt"></i>
+                <strong>{{ imageFile ? 'Changer cette image' : 'Choisir une image' }}</strong>
+                <small>PNG, JPG ou WEBP — 5 Mo maximum</small>
+              </span>
+            </label>
+            <input :id="`edit-image-${product.id}`" type="file" accept="image/*" class="product-image-input" @change="selectImage">
+            <p v-if="imageFile" class="product-file-name"><i class="fi fi-rr-check-circle"></i> {{ imageFile.name }}</p>
           </div>
           <div class="grid grid-cols-2 gap-3">
-            <div><label :for="`edit-price-${product.id}`" class="block font-medium mb-1">Prix</label><input :id="`edit-price-${product.id}`" v-model="form.price" type="number" min="0" step="0.01" class="w-full border rounded-lg px-3 py-2"></div>
-            <div><label :for="`edit-currency-${product.id}`" class="block font-medium mb-1">Devise</label><input :id="`edit-currency-${product.id}`" v-model="form.currency" type="text" maxlength="3" class="w-full border rounded-lg px-3 py-2 uppercase"></div>
+            <div><label :for="`edit-price-${product.id}`" class="product-field-label"><i class="fi fi-rr-dollar"></i> Prix</label><input :id="`edit-price-${product.id}`" v-model="form.price" type="number" min="0" step="0.01" class="w-full border rounded-lg px-3 py-2"></div>
+            <div><label :for="`edit-currency-${product.id}`" class="product-field-label"><i class="fi fi-rr-coins"></i> Devise</label><input :id="`edit-currency-${product.id}`" v-model="form.currency" type="text" maxlength="3" class="w-full border rounded-lg px-3 py-2 uppercase"></div>
           </div>
-          <label class="flex items-center gap-2"><input v-model="form.isAvailable" type="checkbox"> Produit disponible</label>
+          <label class="flex items-center gap-2"><input v-model="form.isAvailable" type="checkbox"><i class="fi fi-rr-check-circle"></i> Produit disponible</label>
           <p v-if="error" class="text-red-600" role="alert">{{ error }}</p>
           <div class="product-edit-actions flex justify-end gap-3 pt-2">
-            <button type="button" class="px-4 py-2 rounded-lg border" @click="close">Annuler</button>
-            <button type="submit" class="product-edit-save px-4 py-2 rounded-lg text-white font-semibold disabled:opacity-50" :style="{ backgroundColor: AppColors.primary }" :disabled="submitting">{{ submitting ? 'Modification…' : 'Enregistrer' }}</button>
+            <button type="button" class="px-4 py-2 rounded-lg border flex items-center gap-2" @click="close"><i class="fi fi-rr-cross-small"></i> Annuler</button>
+            <button type="submit" class="product-edit-save px-4 py-2 rounded-lg text-white font-semibold disabled:opacity-50" :style="{ backgroundColor: AppColors.primary }" :disabled="submitting"><i class="fi fi-rr-disk"></i> {{ submitting ? 'Modification…' : 'Enregistrer' }}</button>
           </div>
         </fieldset>
       </form>
@@ -76,6 +84,16 @@ watch(imageUrl, () => { imageFailed.value = false })
 .product-edit-overlay { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / 55%); }
 .product-edit-form { width: min(100%, 520px); max-height: calc(100vh - 32px); overflow-y: auto; padding: 24px; border-radius: 16px; background: white; box-shadow: 0 20px 50px rgb(0 0 0 / 30%); }
 .product-edit-close { border: 0; color: #4b5563; background: transparent; font-size: 30px; line-height: 1; cursor: pointer; }
+.product-field-label { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; font-weight: 600; }
+.product-field-label i { color: #cbab6c; }
+.product-image-input { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.product-upload-zone { display: flex; align-items: center; gap: 14px; min-height: 112px; padding: 12px; border: 2px dashed #d1d5db; border-radius: 12px; background: #f9fafb; cursor: pointer; transition: border-color .2s ease, background .2s ease; }
+.product-upload-zone:hover { border-color: #cbab6c; background: #fffbf2; }
+.product-upload-preview { width: 88px; height: 88px; flex: 0 0 auto; border-radius: 10px; object-fit: cover; }
+.product-upload-content { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; gap: 3px; }
+.product-upload-content > i { color: #cbab6c; font-size: 26px; }
+.product-upload-content small { color: #6b7280; }
+.product-file-name { display: flex; align-items: center; gap: 6px; margin-top: 7px; color: #4b5563; font-size: 13px; overflow-wrap: anywhere; }
 .product-edit-actions { position: sticky; bottom: -24px; z-index: 2; margin: 0 -24px -24px; padding: 16px 24px 24px; background: white; border-top: 1px solid #e5e7eb; }
-.product-edit-save { display: inline-flex; align-items: center; justify-content: center; min-width: 120px; border: 0; cursor: pointer; }
+.product-edit-save { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 120px; border: 0; cursor: pointer; }
 </style>

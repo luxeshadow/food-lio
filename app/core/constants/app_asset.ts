@@ -9,5 +9,5 @@ export class AppAsset {
   static readonly snowflake = '/image/icon/snowflake.png'
   static readonly toast = '/image/icon/toast.png'
   static readonly witch = '/image/icon/witches.png'
-  static readonly logo = '/image/logo/iou.png'
+  static readonly logo = '/image/logo/menu.png'
 }
