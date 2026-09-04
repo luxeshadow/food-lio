@@ -1,0 +1,15 @@
+export const AppColors = {
+  black: '#000000',
+  white: '#ffffff',
+  backgroundStart: '#fcf4e6',
+  backgroundEnd: '#ffffff',
+  primary: '#cbab6c',
+  primaryBorder: 'rgba(203, 171, 108, 0.4)',
+  primaryShadow: 'rgba(203, 171, 108, 0.2)',
+  cartCount: '#b91c1c',
+  periodBackground: '#f3f4f6',
+  periodText: '#4b5563',
+  text: '#1f2937',
+  textMuted: '#9ca3af',
+  border: '#1f2937',
+} as const
