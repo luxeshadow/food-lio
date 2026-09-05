@@ -21,6 +21,9 @@ const categoryIcons: Record<string, string> = {
 }
 
 const props = defineProps<{ categories: Category[], activeCategory: string }>()
+const headerElement = ref<HTMLElement | null>(null)
+const headerHeight = ref('210px')
+let headerObserver: ResizeObserver | null = null
 // const navigation = computed(() => [
 //   { id: 'menu-du-jour', label: 'Menu du Jour', icon: 'https://i.postimg.cc/DygVbSYH/calendar.png' },
 //   ...props.categories.filter(category => category.slug !== 'menu-du-jour').map(category => ({
@@ -50,10 +53,20 @@ const emit = defineEmits<{
 function selectCategory(category: string) {
   emit('categoryChange', category)
 }
+
+onMounted(() => {
+  if (!headerElement.value) return
+  const updateHeight = () => { headerHeight.value = `${headerElement.value?.offsetHeight ?? 0}px` }
+  updateHeight()
+  headerObserver = new ResizeObserver(updateHeight)
+  headerObserver.observe(headerElement.value)
+})
+
+onBeforeUnmount(() => headerObserver?.disconnect())
 </script>
 
 <template>
-  <header class="app-header">
+  <header ref="headerElement" class="app-header">
     <div class="brand">
       <!-- <div class="logo-frame">
         <img :src="AppAsset.logo" alt="Logo RAN Restaurant" class="logo">
@@ -77,13 +90,17 @@ function selectCategory(category: string) {
       </button>
     </nav>
   </header>
+  <div class="header-spacer" :style="{ height: headerHeight }" aria-hidden="true"></div>
 </template>
 
 <style scoped>
 .app-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
   z-index: 1000;
+  width: 100%;
+  box-sizing: border-box;
   padding: 24px 16px 32px;
   overflow: hidden;
   text-align: center;
@@ -91,6 +108,11 @@ function selectCategory(category: string) {
   background: v-bind(headerBlack);
   border-bottom: 1px solid v-bind(headerBorder);
   box-shadow: 0 10px 15px rgb(0 0 0 / 20%);
+}
+
+.header-spacer {
+  width: 100%;
+  pointer-events: none;
 }
 
 .brand {
@@ -168,10 +190,6 @@ button {
 button:hover,
 button.active {
   color: v-bind(headerPrimary);
-}
-
-button.active {
-  border-bottom-color: v-bind(headerPrimary);
 }
 
 button img {
