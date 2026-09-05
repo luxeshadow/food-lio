@@ -101,7 +101,7 @@ onBeforeUnmount(() => headerObserver?.disconnect())
   z-index: 1000;
   width: 100%;
   box-sizing: border-box;
-  padding: 24px 16px 32px;
+  padding: 24px 16px 20px;
   overflow: hidden;
   text-align: center;
   color: v-bind(headerWhite);
