@@ -1,6 +1,6 @@
 <template>
   <div class="app" :style="menuColors">
-    <NuxtRouteAnnouncer />
+    <!-- <NuxtRouteAnnouncer /> -->
     <BackgroundAnimation v-if="route.path === '/'" />
     <NuxtPage />
   </div>
