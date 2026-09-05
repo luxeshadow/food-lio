@@ -1,6 +1,6 @@
 export class AppAsset {
   static readonly cherryBlossom = '/image/icon/cherry-blossom.png'
-  static readonly food = '/image/icon/food.png'
+  static readonly food = '/image/icon/cutlery.png'
   static readonly maple = '/image/icon/maple.png'
   static readonly nature = '/image/icon/nature.png'
   static readonly pannaCotta = '/image/icon/panna-cotta.png'
