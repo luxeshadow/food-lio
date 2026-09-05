@@ -165,7 +165,7 @@ watch(imageUrl, () => { imageFailed.value = false })
             <div><label :for="`edit-price-${product.id}`" class="product-field-label"><i class="fi fi-rr-dollar"></i> Prix</label><input :id="`edit-price-${product.id}`" v-model="form.price" type="number" min="0" step="0.01" class="w-full border rounded-lg px-3 py-2"></div>
             <div><label :for="`edit-currency-${product.id}`" class="product-field-label"><i class="fi fi-rr-coins"></i> Devise</label><input :id="`edit-currency-${product.id}`" v-model="form.currency" type="text" maxlength="3" class="w-full border rounded-lg px-3 py-2 uppercase"></div>
           </div>
-          <label class="flex items-center gap-2"><input v-model="form.isAvailable" type="checkbox"><i class="fi fi-rr-check-circle"></i> Produit disponible</label>
+          <label class="flex items-center gap-2"><input v-model="form.isAvailable" type="checkbox"> Produit disponible</label>
           <p v-if="error" class="text-red-600" role="alert">{{ error }}</p>
           <div class="product-edit-actions flex justify-end gap-3 pt-2">
             <button type="button" class="px-4 py-2 rounded-lg border flex items-center gap-2" @click="close"><i class="fi fi-rr-cross-small"></i> Annuler</button>

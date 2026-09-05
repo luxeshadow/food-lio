@@ -100,7 +100,7 @@ const groups = computed(() => [
 
   </main>
 
-  <footer class="text-center py-6 text-sm text-gray-500 mt-12 animate__animated animate__fadeInUp">© 2026 RAN Restaurant. Tous droits réservés.</footer>
+  <footer class="text-center py-6 text-sm text-gray-500 mt-12 animate__animated animate__fadeInUp">© 2026 Restaurant.</footer>
 </template>
 
 <style scoped>

@@ -1,13 +1,75 @@
 <script setup lang="ts">
 import { useProduct } from '../store/use_product'
 import { useCategories } from '../../../categorie/presentation/store/use_categories'
+import { Failure } from '../../../../core/errors/failure'
+import { useSupabase } from '../../../../core/supabase/supabase'
+import { CreateProduct } from '../../application/usecase/create_product'
+import { ProductRepositoryImpl } from '../../data/repositories/product_repository_impl'
+import type { Product } from '../../domain/entities/product'
 
-const { form, imageFile, submitting, error, createdProduct, selectImage, submit } = useProduct()
+const { addProduct } = useProduct()
+const form = reactive({ name: '', categoryId: 0, description: '', price: '' as number | '', currency: '', isAvailable: true })
+const imageFile = ref<File | null>(null)
+const submitting = ref(false)
+const error = ref('')
+const createdProduct = ref<Product | null>(null)
+const createProductUseCase = new CreateProduct(new ProductRepositoryImpl())
 const { categories, error: categoryError, loadCategories } = useCategories()
 const loadingCategories = ref(true)
 async function refreshCategories() { loadingCategories.value = true; await loadCategories(); loadingCategories.value = false }
 const selectedCategorySlug = computed(() => categories.value.find(category => category.id === form.categoryId)?.slug ?? '')
-function submitForm() { return submit(selectedCategorySlug.value) }
+
+function selectImage(event: Event) {
+  imageFile.value = (event.target as HTMLInputElement).files?.[0] ?? null
+}
+
+async function uploadImage() {
+  const file = imageFile.value
+  if (!file) return null
+  if (!file.type.startsWith('image/')) throw new Error('Choisissez un fichier image.')
+  if (file.size > 5 * 1024 * 1024) throw new Error('L’image ne doit pas dépasser 5 Mo.')
+  const folders: Record<string, string> = {
+    nourriture: 'nouriture', nouriture: 'nouriture', dessert: 'desert', desert: 'desert',
+    boisson: 'boisson', 'fruit-de-mer': 'fruit_mere', 'fruits-de-mer': 'fruit_mere', fruit_mere: 'fruit_mere',
+  }
+  const slug = selectedCategorySlug.value
+  const folder = folders[slug] ?? slug.replace(/[^a-z0-9_-]/gi, '_')
+  const extension = file.name.split('.').pop()?.toLowerCase().replace(/[^a-z0-9]/g, '') || 'webp'
+  const path = `${folder}/${crypto.randomUUID()}.${extension}`
+  const { error: uploadError } = await useSupabase().storage.from('media').upload(path, file, {
+    contentType: file.type,
+    upsert: false,
+  })
+  if (uploadError) throw uploadError
+  return path
+}
+
+async function submitForm() {
+  if (submitting.value) return
+  submitting.value = true
+  error.value = ''
+  createdProduct.value = null
+  try {
+    const result = await createProductUseCase.execute({
+      name: form.name,
+      categoryId: Number(form.categoryId),
+      description: form.description.trim() || null,
+      imagePath: await uploadImage(),
+      price: form.price === '' ? null : Number(form.price),
+      currency: form.currency.trim() || null,
+      isAvailable: form.isAvailable,
+    })
+    if (result instanceof Failure) { error.value = result.message; return }
+    createdProduct.value = result
+    addProduct(result)
+    Object.assign(form, { name: '', categoryId: 0, description: '', price: '', currency: '', isAvailable: true })
+    imageFile.value = null
+  } catch (cause) {
+    error.value = cause instanceof Error ? cause.message : 'Impossible d’enregistrer le produit.'
+  } finally {
+    submitting.value = false
+  }
+}
 onMounted(refreshCategories)
 </script>
 

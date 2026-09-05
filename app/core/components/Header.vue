@@ -55,10 +55,10 @@ function selectCategory(category: string) {
 <template>
   <header class="app-header">
     <div class="brand">
-      <div class="logo-frame">
+      <!-- <div class="logo-frame">
         <img :src="AppAsset.logo" alt="Logo RAN Restaurant" class="logo">
-      </div>
-      <h1><span>-</span> Menu Digital</h1>
+      </div> -->
+      <h1 style="margin-top: 15px;"><span></span> Menu Digital</h1>
     </div>
 
     <p >Scannez le QR code pour consulter notre menu</p>
@@ -81,6 +81,9 @@ function selectCategory(category: string) {
 
 <style scoped>
 .app-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   padding: 24px 16px 32px;
   overflow: hidden;
   text-align: center;

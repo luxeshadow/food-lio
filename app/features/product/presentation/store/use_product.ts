@@ -12,6 +12,10 @@ function setProducts(value: Product[]) {
   products.value = value
 }
 
+function addProduct(product: Product) {
+  if (!products.value.some(item => item.id === product.id)) products.value.push(product)
+}
+
 function updateProduct(updatedProduct: Product) {
   const index = products.value.findIndex(product => product.id === updatedProduct.id)
   if (index === -1) return
@@ -58,6 +62,7 @@ export function useProduct() {
     loading,
     error,
     setProducts,
+    addProduct,
     updateProduct,
     setSelectedCategory,
     setSelectedDay,
