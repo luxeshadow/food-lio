@@ -177,7 +177,7 @@ button {
   flex: 0 0 auto;
   gap: 8px;
   padding: 4px 0;
-  border: 0;
+  border:none;
   border-bottom: 2px solid transparent;
   color: #d1d5db;
   background: transparent;
