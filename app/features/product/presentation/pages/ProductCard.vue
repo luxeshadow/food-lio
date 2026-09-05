@@ -111,7 +111,6 @@ async function submit() {
 onBeforeUnmount(clearImagePreview)
 const config = useRuntimeConfig()
 const imageFailed = ref(false)
-const imageLoaded = ref(false)
 const imageUrl = computed(() => {
   const path = props.product.imagePath
   if (!path) return ''
@@ -119,10 +118,7 @@ const imageUrl = computed(() => {
   const objectPath = path.replace(/^media\//, '').split('/').map(encodeURIComponent).join('/')
   return String(config.public.supabaseUrl).replace(/\/$/, '') + '/storage/v1/object/public/media/' + objectPath
 })
-watch(imageUrl, () => {
-  imageFailed.value = false
-  imageLoaded.value = false
-})
+watch(imageUrl, () => { imageFailed.value = false })
 </script>
 
 <template>
@@ -131,10 +127,7 @@ watch(imageUrl, () => {
       <i class="fi fi-rr-pen-circle" aria-hidden="true"></i>
     </button>
     <div>
-      <div v-if="imageUrl && !imageFailed" class="product-image-container mb-3 rounded-lg">
-        <div v-if="!imageLoaded" class="product-image-skeleton" aria-hidden="true"></div>
-        <img :src="imageUrl" :alt="product.name" class="product-card-image" :class="{ 'is-loaded': imageLoaded }" @load="imageLoaded = true" @error="imageFailed = true">
-      </div>
+      <img v-if="imageUrl && !imageFailed" :src="imageUrl" :alt="product.name" class="rounded-lg mb-3 w-full object-contain" @error="imageFailed = true">
       <h3 class="text-lg font-bold mb-1 text-gray-900">{{ product.name }}</h3>
       <p class="text-xs text-gray-500 mb-4 line-clamp-2">{{ product.description }}</p>
     </div>
@@ -186,13 +179,6 @@ watch(imageUrl, () => {
 
 <style scoped>
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.product-image-container { position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: #f3f4f6; }
-.product-card-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; }
-.product-card-image.is-loaded { opacity: 1; }
-.product-image-skeleton { position: absolute; inset: 0; overflow: hidden; background: #e5e7eb; }
-.product-image-skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgb(255 255 255 / 65%), transparent); animation: image-skeleton-loading 1.25s infinite; }
-@keyframes image-skeleton-loading { to { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) { .product-image-skeleton::after { animation: none; } }
 .product-edit-button { position: absolute; z-index: 2; top: 12px; right: 12px; display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 0; color: white; background: transparent; cursor: pointer; }
 .product-edit-button i { font-size: 21px; line-height: 1; }
 .product-edit-overlay { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / 55%); }
