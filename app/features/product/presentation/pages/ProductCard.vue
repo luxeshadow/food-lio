@@ -125,6 +125,7 @@ watch(imageUrl, () => { imageFailed.value = false })
   <div class="relative bg-white p-4 rounded-xl shadow-md hover:shadow-xl transition flex flex-col justify-between">
     <button type="button" class="product-edit-button" aria-label="Modifier ce produit" title="Modifier" @click="open">
       <i class="fi fi-rr-pen-circle" aria-hidden="true"></i>
+      <span>Edit</span>
     </button>
     <div>
       <img v-if="imageUrl && !imageFailed" :src="imageUrl" :alt="product.name" class="rounded-lg mb-3 w-full object-contain" @error="imageFailed = true">
@@ -179,7 +180,9 @@ watch(imageUrl, () => { imageFailed.value = false })
 
 <style scoped>
 .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.product-edit-button { position: absolute; z-index: 2; top: 12px; right: 12px; display: grid; place-items: center; width: 42px; height: 42px; padding: 0; border: 0; color: white; background: transparent; cursor: pointer; }
+.product-edit-button { position: absolute; z-index: 2; top: 12px; right: 12px; display: inline-flex; align-items: center; gap: 6px; min-height: 34px; padding: 7px 11px; border: 0; border-radius: 6px; color: #171717; background: #cbab6c; box-shadow: 0 4px 12px rgb(0 0 0 / 22%); font-size: 13px; font-weight: 700; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease, background-color .18s ease; }
+.product-edit-button:hover { background: #d8bc84; box-shadow: 0 6px 16px rgb(0 0 0 / 26%); transform: translateY(-1px); }
+.product-edit-button:active { transform: translateY(0); }
 .product-edit-button i { font-size: 21px; line-height: 1; }
 .product-edit-overlay { position: fixed; inset: 0; z-index: 10000; display: grid; place-items: center; padding: 16px; background: rgb(0 0 0 / 55%); }
 .product-edit-form { width: min(100%, 520px); max-height: calc(100vh - 32px); overflow-y: auto; padding: 24px; border-radius: 16px; background: white; box-shadow: 0 20px 50px rgb(0 0 0 / 30%); }

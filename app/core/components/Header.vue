@@ -2,6 +2,7 @@
 import { AppColors } from '../constants/app_colors'
 import { AppAsset } from '../constants/app_asset'
 import type { Category } from '../../features/categorie/domain/entities/category'
+import SearchButton from './SearchButton.vue'
 
 const headerWhite = AppColors.white
 const headerBlack = AppColors.black
@@ -67,6 +68,7 @@ onBeforeUnmount(() => headerObserver?.disconnect())
 
 <template>
   <header ref="headerElement" class="app-header">
+    <SearchButton placement="header" />
     <div class="brand">
       <!-- <div class="logo-frame">
         <img :src="AppAsset.logo" alt="Logo RAN Restaurant" class="logo">
