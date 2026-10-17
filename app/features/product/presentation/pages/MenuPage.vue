@@ -90,6 +90,7 @@ const groups = computed(() => [
         <template v-if="isDailyMenu">
           <span class="daily-menu-title">
             <span class="daily-menu-day">Menu du {{ days[day - 1]?.name }}</span>
+            <span class="daily-menu-price">40 <span>$</span></span>
             <span class="daily-menu-period"><img :src="period === 'midi' ? AppAsset.morn : AppAsset.moon" alt="">{{ period === 'midi' ? 'Midi' : 'Soir' }}</span>
           </span>
         </template>
@@ -124,6 +125,8 @@ const groups = computed(() => [
 </template>
 
 <style scoped>
+.daily-menu-price { display: inline-flex; align-items: baseline; gap: 3px; color: #78633d; font-size: 22px; font-weight: 700; white-space: nowrap; }
+.daily-menu-price > span { font-size: 14px; font-weight: 500; }
 .daily-menu-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
 .daily-menu-day { color: #29251e; font-size: clamp(20px, 4vw, 25px); line-height: 1.3; }
 .daily-menu-period { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid #eae4d8; border-radius: 999px; background: #fffaf0; color: #78633d; font-family: Inter, Arial, sans-serif; font-size: 12px; font-weight: 600; line-height: 1.4; }
