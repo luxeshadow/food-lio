@@ -75,10 +75,10 @@ const groups = computed(() => [
         </div>
         <div class="period-switch" :class="{ 'is-evening': period === 'soir' }" role="group" aria-label="Choisir le service">
           <button id="period-midi" type="button" class="period-btn" :class="{ 'active-period': period === 'midi' }" :aria-pressed="period === 'midi'" @click="period = 'midi'">
-            <span class="period-icon"><img :src="AppAsset.morn" alt=""></span><span class="period-label"><span>Midi</span><small>Pause gourmande</small></span>
+            <span class="period-icon"><img :src="AppAsset.morn" alt=""></span><span class="period-label"><span>Midi</span></span>
           </button>
           <button id="period-soir" type="button" class="period-btn" :class="{ 'active-period': period === 'soir' }" :aria-pressed="period === 'soir'" @click="period = 'soir'">
-            <span class="period-icon"><img :src="AppAsset.moon" alt=""></span><span class="period-label"><span>Soir</span><small>À la belle étoile</small></span>
+            <span class="period-icon"><img :src="AppAsset.moon" alt=""></span><span class="period-label"><span>Soir</span></span>
           </button>
         </div>
       </div>
@@ -144,7 +144,6 @@ const groups = computed(() => [
 .period-btn img { width: 23px; height: 23px; object-fit: contain; }
 .period-label { display: flex; flex-direction: column; gap: 3px; text-align: left; }
 .period-label > span { font-size: 14px; font-weight: 700; line-height: 1.2; }
-.period-label small { font-size: 9px; font-weight: 500; line-height: 1.4; opacity: .8; white-space: nowrap; }
 .period-btn.active-period { color: #322817; }
 .active-period .period-icon { background: rgb(255 255 255 / 35%); transform: rotate(-8deg); }
 .day-list { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
