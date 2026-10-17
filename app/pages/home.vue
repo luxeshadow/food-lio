@@ -6,13 +6,11 @@ import { useCategories } from '../features/categorie/presentation/store/use_cate
 import SearchButton from '../core/components/SearchButton.vue'
 
 definePageMeta({ alias: ['/'] })
-const selectedCategory = ref('nourriture')
+const selectedCategory = ref('menu-du-jour')
 const { categories, error: categoryError, loadCategories } = useCategories()
 const categoryName = computed(() => categories.value.find(category => category.slug === selectedCategory.value)?.name ?? '')
 async function loadPageCategories() {
   await loadCategories()
-  const foodCategory = categories.value.find(category => ['nourriture', 'nouriture'].includes(category.slug))
-  if (foodCategory) selectedCategory.value = foodCategory.slug
 }
 onMounted(loadPageCategories)
 </script>

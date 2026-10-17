@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { AppAsset } from '../../../../core/constants/app_asset'
 import { useProduct } from '../store/use_product'
 import ProductCard from './ProductCard.vue'
 import ProductSkeleton from '../../../../core/components/ProductSkeleton.vue'
@@ -43,8 +44,14 @@ async function loadProducts() {
 watch(() => props.category, (category) => {
   setSelectedCategory(category)
   void loadProducts()
-}, { immediate: true })
-watch([day, period], loadProducts)
+})
+onMounted(() => {
+  setSelectedCategory(props.category)
+  void loadProducts()
+})
+watch([day, period], () => {
+  if (isDailyMenu.value) void loadProducts()
+})
 onBeforeUnmount(() => { requestNumber++ })
 const days = [
   { name: 'Lundi', short: 'Lun' }, { name: 'Mardi', short: 'Mar' },
@@ -53,8 +60,8 @@ const days = [
   { name: 'Dimanche', short: 'Dim' },
 ]
 const groups = computed(() => [
-  { title: 'Plats Principaux', icon: 'https://i.postimg.cc/NM5Gd1Zs/fried-rice.png', products: products.value.filter(product => product.menuItemType === 'repas') },
-  { title: 'Desserts du Jour', icon: 'https://i.postimg.cc/PxPfSm0f/gelato.png', products: products.value.filter(product => product.menuItemType === 'dessert') },
+  { title: 'Plats Principaux', icon: AppAsset.restaurant, products: products.value.filter(product => product.menuItemType === 'repas') },
+  { title: 'Desserts du Jour', icon: AppAsset.pannaCotta, products: products.value.filter(product => product.menuItemType === 'dessert') },
 ])
 </script>
 
@@ -62,8 +69,8 @@ const groups = computed(() => [
   <main class="max-w-4xl mx-auto px-4 py-8">
      <div v-if="isDailyMenu" id="day-selector-container" class="mb-6 bg-white p-4 rounded-xl shadow-sm">
       <div class="flex justify-center gap-3 mb-4">
-        <button id="period-midi" type="button" class="period-btn px-5 py-2 rounded-full font-semibold text-sm transition-all" :class="{ 'active-period': period === 'midi' }" :aria-pressed="period === 'midi'" @click="period = 'midi'">☀️ Midi (Jour)</button>
-        <button id="period-soir" type="button" class="period-btn px-5 py-2 rounded-full font-semibold text-sm transition-all" :class="{ 'active-period': period === 'soir' }" :aria-pressed="period === 'soir'" @click="period = 'soir'">🌙 Soir</button>
+        <button id="period-midi" type="button" class="period-btn px-5 py-2 rounded-full font-semibold text-sm transition-all" :class="{ 'active-period': period === 'midi' }" :aria-pressed="period === 'midi'" @click="period = 'midi'"><img :src="AppAsset.morn" alt="" class="w-5 h-5 object-contain"> Midi (Jour)</button>
+        <button id="period-soir" type="button" class="period-btn px-5 py-2 rounded-full font-semibold text-sm transition-all" :class="{ 'active-period': period === 'soir' }" :aria-pressed="period === 'soir'" @click="period = 'soir'"><img :src="AppAsset.moon" alt="" class="w-5 h-5 object-contain"> Soir</button>
       </div>
       <div class="scroll-clean flex gap-2 overflow-x-auto pb-1 justify-start sm:justify-center">
         <button v-for="(item, index) in days" :key="item.name" type="button" class="day-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" :class="{ 'active-day': day === index + 1 }" :aria-pressed="day === index + 1" @click="day = index + 1">{{ item.short }}</button>
@@ -72,8 +79,8 @@ const groups = computed(() => [
 
     <section id="product-container" class="mb-12" :aria-busy="loading">
       <h2 class="text-xl font-bold mb-6 animate__animated animate__fadeIn" :class="{ 'text-center': isDailyMenu }" style="color: var(--menu-primary)">
-        <template v-if="isDailyMenu">Menu du {{ days[day - 1]?.name }} ({{ period === 'midi' ? '☀️ Midi' : '🌙 Soir' }})</template>
-        <template v-else>{{ categoryName }}</template>
+        <template v-if="isDailyMenu"><img :src="AppAsset.restaurant" alt="" class="menu-title-icon"> Menu du {{ days[day - 1]?.name }} (<img :src="period === 'midi' ? AppAsset.morn : AppAsset.moon" alt="" class="menu-title-icon"> {{ period === 'midi' ? 'Midi' : 'Soir' }})</template>
+        <template v-else><img :src="AppAsset.restaurant" alt="" class="menu-title-icon"> {{ categoryName }}</template>
       </h2>
       <ProductSkeleton v-if="loading" />
       <div v-else-if="error" role="alert">
@@ -107,6 +114,7 @@ const groups = computed(() => [
 .scroll-clean { scrollbar-width: none; -ms-overflow-style: none; }
 .scroll-clean::-webkit-scrollbar { display: none; }
 .active-day { background-color: var(--menu-primary) !important; color: var(--menu-white) !important; }
-.period-btn { background-color: var(--menu-period-background); color: var(--menu-period-text); border: none; transition: all .3s ease; }
+.menu-title-icon { display: inline-block; width: 24px; height: 24px; object-fit: contain; vertical-align: middle; }
+.period-btn { display: inline-flex; align-items: center; gap: 8px; background-color: var(--menu-period-background); color: var(--menu-period-text); border: none; transition: all .3s ease; }
 .active-period { color: var(--menu-white) !important; background-color: var(--menu-primary) !important; box-shadow: 0 4px 12px var(--menu-primary-shadow); }
 </style>

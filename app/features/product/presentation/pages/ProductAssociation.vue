@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useProduct } from '../store/use_product'
+import { useProductAssociations } from '../store/use_product_associations'
 
-const { products, periods, associations, form, loading, loadingAssociations, submitting, error, listError, choicesError, success, loadChoices, loadAssociations, submit, remove } = useProduct()
+const { products, periods, associations, form, loading, loadingAssociations, submitting, error, listError, choicesError, success, loadChoices, loadAssociations, submit, remove } = useProductAssociations()
 const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
 </script>
 

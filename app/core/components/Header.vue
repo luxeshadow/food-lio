@@ -25,15 +25,9 @@ const props = defineProps<{ categories: Category[], activeCategory: string }>()
 const headerElement = ref<HTMLElement | null>(null)
 const headerHeight = ref('210px')
 let headerObserver: ResizeObserver | null = null
-// const navigation = computed(() => [
-//   { id: 'menu-du-jour', label: 'Menu du Jour', icon: 'https://i.postimg.cc/DygVbSYH/calendar.png' },
-//   ...props.categories.filter(category => category.slug !== 'menu-du-jour').map(category => ({
-//     id: category.slug, label: category.name, icon: '',
-//   })),
-// ])
-
-const navigation = computed(() =>
-  props.categories
+const navigation = computed(() => [
+  { id: 'menu-du-jour', label: 'Menu du Jour', icon: AppAsset.food },
+  ...props.categories
     .filter(category => category.slug !== 'menu-du-jour')
     .sort((first, second) => {
       const firstIsFood = ['nourriture', 'nouriture'].includes(first.slug)
@@ -44,9 +38,8 @@ const navigation = computed(() =>
       id: category.slug,
       label: category.name,
       icon: categoryIcons[category.slug] ?? '',
-    }))
-)
-
+    })),
+])
 const emit = defineEmits<{
   categoryChange: [category: string]
 }>()
