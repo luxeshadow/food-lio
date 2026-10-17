@@ -73,12 +73,12 @@ const groups = computed(() => [
           <span class="selector-eyebrow">À LA CARTE DU JOUR</span>
           <p class="selector-title">Quel jour vous fait envie ?</p>
         </div>
-        <div class="period-switch" role="group" aria-label="Choisir le service">
+        <div class="period-switch" :class="{ 'is-evening': period === 'soir' }" role="group" aria-label="Choisir le service">
           <button id="period-midi" type="button" class="period-btn" :class="{ 'active-period': period === 'midi' }" :aria-pressed="period === 'midi'" @click="period = 'midi'">
-            <img :src="AppAsset.morn" alt=""> <span>Midi</span>
+            <span class="period-icon"><img :src="AppAsset.morn" alt=""></span><span class="period-label"><span>Midi</span><small>Pause gourmande</small></span>
           </button>
           <button id="period-soir" type="button" class="period-btn" :class="{ 'active-period': period === 'soir' }" :aria-pressed="period === 'soir'" @click="period = 'soir'">
-            <img :src="AppAsset.moon" alt=""> <span>Soir</span>
+            <span class="period-icon"><img :src="AppAsset.moon" alt=""></span><span class="period-label"><span>Soir</span><small>À la belle étoile</small></span>
           </button>
         </div>
       </div>
@@ -143,10 +143,17 @@ const groups = computed(() => [
 .selector-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
 .selector-eyebrow { color: #78633d; font-size: 10px; font-weight: 700; letter-spacing: 1.8px; }
 .selector-title { margin: 6px 0 0; color: #29251e; font-size: 18px; font-weight: 600; line-height: 1.4; }
-.period-switch { display: flex; flex-shrink: 0; gap: 4px; padding: 5px; border: 1px solid #eae4d8; border-radius: 16px; background: #f3f0e9; }
-.period-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 10px 18px; border: 0; border-radius: 11px; background: transparent; color: #625c51; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s, color .2s, box-shadow .2s; }
-.period-btn img { width: 22px; height: 22px; object-fit: contain; }
-.period-btn.active-period { color: #29251e; background: #fff; box-shadow: 0 2px 8px rgb(74 55 25 / 10%); }
+.period-switch { position: relative; isolation: isolate; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); flex-shrink: 0; width: 330px; max-width: 100%; padding: 5px; box-sizing: border-box; border: 1px solid #39352d; border-radius: 20px; background: #211f1b; box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%), 0 7px 18px rgb(35 29 18 / 12%); }
+.period-switch::before { content: ''; position: absolute; z-index: -1; top: 5px; bottom: 5px; left: 5px; width: calc((100% - 10px) / 2); border-radius: 15px; background: linear-gradient(135deg, #efdbad, var(--menu-primary)); box-shadow: inset 0 1px 0 rgb(255 255 255 / 45%), 0 3px 10px rgb(0 0 0 / 18%); transition: transform .3s cubic-bezier(.22, 1, .36, 1); }
+.period-switch.is-evening::before { transform: translateX(100%); }
+.period-btn { display: flex; align-items: center; justify-content: center; gap: 9px; min-width: 0; min-height: 60px; padding: 10px; border: 0; border-radius: 15px; background: transparent; color: #e0d9cd; font: inherit; cursor: pointer; transition: color .25s; }
+.period-icon { display: grid; place-items: center; flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; background: rgb(255 255 255 / 8%); transition: background .25s, transform .25s; }
+.period-btn img { width: 23px; height: 23px; object-fit: contain; }
+.period-label { display: flex; flex-direction: column; gap: 3px; text-align: left; }
+.period-label > span { font-size: 14px; font-weight: 700; line-height: 1.2; }
+.period-label small { font-size: 9px; font-weight: 500; line-height: 1.4; opacity: .8; white-space: nowrap; }
+.period-btn.active-period { color: #322817; }
+.active-period .period-icon { background: rgb(255 255 255 / 35%); transform: rotate(-8deg); }
 .day-list { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
 .day-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; min-width: 0; min-height: 65px; padding: 12px 4px 9px; border: 1px solid transparent; border-radius: 14px; color: #6b655b; background: #f5f3ee; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
 .day-indicator { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .2; }
@@ -154,10 +161,10 @@ const groups = computed(() => [
 .active-day .day-indicator { opacity: 1; }
 @media (hover: hover) {
   .day-btn:not(.active-day):hover { background: #eee7d9; border-color: #ded1b8; }
-  .period-btn:not(.active-period):hover { background: #e9e4d9; }
+  .period-btn:not(.active-period):hover .period-icon { background: rgb(255 255 255 / 16%); transform: translateY(-2px); }
 }
 .day-btn:focus-visible, .period-btn:focus-visible { outline: 2px solid #78633d; outline-offset: 3px; }
-@media (max-width: 540px) {
+@media (max-width: 700px) {
   .menu-selector { padding: 18px 14px; border-radius: 20px; }
   .selector-top { flex-direction: column; align-items: stretch; gap: 16px; margin-bottom: 16px; }
   .selector-heading { text-align: center; }
@@ -168,6 +175,6 @@ const groups = computed(() => [
   .day-btn { min-height: 59px; border-radius: 11px; font-size: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .day-btn, .period-btn { transition: none; }
+  .day-btn, .period-btn, .period-icon, .period-switch::before { transition: none; }
 }
 </style>
