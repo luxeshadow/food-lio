@@ -132,14 +132,7 @@ const groups = computed(() => [
 .daily-menu-day { color: #29251e; font-size: clamp(20px, 4vw, 25px); line-height: 1.3; }
 .daily-menu-period { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid #eae4d8; border-radius: 999px; background: #fffaf0; color: #78633d; font-family: Inter, Arial, sans-serif; font-size: 12px; font-weight: 600; line-height: 1.4; }
 .daily-menu-period img { width: 18px; height: 18px; object-fit: contain; }
-.menu-selector {
-  margin-bottom: 32px;
-  padding: 24px;
-  border: 1px solid #eae4d8;
-  border-radius: 24px;
-  background: linear-gradient(135deg, #ffffff, #fffcf5);
-  box-shadow: 0 8px 28px rgb(74 55 25 / 5%);
-}
+.menu-selector { margin-bottom: 32px; }
 .selector-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 22px; }
 .selector-eyebrow { color: #78633d; font-size: 10px; font-weight: 700; letter-spacing: 1.8px; }
 .selector-title { margin: 6px 0 0; color: #29251e; font-size: 18px; font-weight: 600; line-height: 1.4; }
@@ -165,7 +158,7 @@ const groups = computed(() => [
 }
 .day-btn:focus-visible, .period-btn:focus-visible { outline: 2px solid #78633d; outline-offset: 3px; }
 @media (max-width: 700px) {
-  .menu-selector { padding: 18px 14px; border-radius: 20px; }
+  .menu-selector { margin-bottom: 32px; }
   .selector-top { flex-direction: column; align-items: stretch; gap: 16px; margin-bottom: 16px; }
   .selector-heading { text-align: center; }
   .selector-title { font-size: 17px; }
