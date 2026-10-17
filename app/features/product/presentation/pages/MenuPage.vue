@@ -91,7 +91,12 @@ const groups = computed(() => [
     </div>
     <section id="product-container" class="mb-12" :aria-busy="loading">
       <h2 class="text-xl font-bold mb-6 animate__animated animate__fadeIn" :class="{ 'text-center': isDailyMenu }" style="color: var(--menu-primary)">
-        <template v-if="isDailyMenu">Menu du {{ days[day - 1]?.name }} ({{ period === 'midi' ? '☀️ Midi' : '🌙 Soir' }})</template>
+        <template v-if="isDailyMenu">
+          <span class="daily-menu-title">
+            <span class="daily-menu-day">Menu du {{ days[day - 1]?.name }}</span>
+            <span class="daily-menu-period"><img :src="period === 'midi' ? AppAsset.morn : AppAsset.moon" alt="">{{ period === 'midi' ? 'Midi' : 'Soir' }}</span>
+          </span>
+        </template>
         <template v-else>{{ categoryName }}</template>
       </h2>
       <ProductSkeleton v-if="loading" />
@@ -123,6 +128,10 @@ const groups = computed(() => [
 </template>
 
 <style scoped>
+.daily-menu-title { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; }
+.daily-menu-day { color: #29251e; font-size: clamp(20px, 4vw, 25px); line-height: 1.3; }
+.daily-menu-period { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 1px solid #eae4d8; border-radius: 999px; background: #fffaf0; color: #78633d; font-family: Inter, Arial, sans-serif; font-size: 12px; font-weight: 600; line-height: 1.4; }
+.daily-menu-period img { width: 18px; height: 18px; object-fit: contain; }
 .menu-selector {
   margin-bottom: 32px;
   padding: 24px;
