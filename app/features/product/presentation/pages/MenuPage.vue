@@ -131,7 +131,7 @@ const groups = computed(() => [
 .menu-selector { margin-bottom: 32px; }
 .selector-top { display: flex; justify-content: center; margin-bottom: 22px; }
 .period-switch { display: inline-flex; align-items: center; justify-content: center; gap: 8px; max-width: 100%; }
-.period-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 7px 14px; border: 0; border-radius: 999px; background: #f0ede7; color: #746d61; font: inherit; cursor: pointer; transition: background .18s, color .18s; }
+.period-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 7px 14px; border: 0; border-radius: 8px; background: #f0ede7; color: #746d61; font: inherit; cursor: pointer; transition: background .18s, color .18s; }
 .period-icon { display: flex; align-items: center; justify-content: center; }
 .period-btn img { width: 20px; height: 20px; object-fit: contain; }
 .period-label { font-size: 13px; font-weight: 600; line-height: 1.4; }
