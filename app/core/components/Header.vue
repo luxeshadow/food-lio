@@ -26,7 +26,7 @@ const headerElement = ref<HTMLElement | null>(null)
 const headerHeight = ref('210px')
 let headerObserver: ResizeObserver | null = null
 const navigation = computed(() => [
-  { id: 'menu-du-jour', label: 'Menu', icon: AppAsset.restaurant },
+  { id: 'menu-du-jour', label: 'Menu 40$', icon: AppAsset.restaurant },
   ...props.categories
     .filter(category => category.slug !== 'menu-du-jour')
     .sort((first, second) => {
