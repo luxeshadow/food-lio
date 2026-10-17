@@ -60,7 +60,7 @@ const groups = computed(() => [
 
 <template>
   <main class="max-w-4xl mx-auto px-4 py-8">
-    <!-- <div v-if="isDailyMenu" id="day-selector-container" class="mb-6 bg-white p-4 rounded-xl shadow-sm">
+     <div v-if="isDailyMenu" id="day-selector-container" class="mb-6 bg-white p-4 rounded-xl shadow-sm">
       <div class="flex justify-center gap-3 mb-4">
         <button id="period-midi" type="button" class="period-btn px-5 py-2 rounded-full font-semibold text-sm transition-all" :class="{ 'active-period': period === 'midi' }" :aria-pressed="period === 'midi'" @click="period = 'midi'">☀️ Midi (Jour)</button>
         <button id="period-soir" type="button" class="period-btn px-5 py-2 rounded-full font-semibold text-sm transition-all" :class="{ 'active-period': period === 'soir' }" :aria-pressed="period === 'soir'" @click="period = 'soir'">🌙 Soir</button>
@@ -68,7 +68,7 @@ const groups = computed(() => [
       <div class="scroll-clean flex gap-2 overflow-x-auto pb-1 justify-start sm:justify-center">
         <button v-for="(item, index) in days" :key="item.name" type="button" class="day-btn bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap" :class="{ 'active-day': day === index + 1 }" :aria-pressed="day === index + 1" @click="day = index + 1">{{ item.short }}</button>
       </div>
-    </div> -->
+    </div>
 
     <section id="product-container" class="mb-12" :aria-busy="loading">
       <h2 class="text-xl font-bold mb-6 animate__animated animate__fadeIn" :class="{ 'text-center': isDailyMenu }" style="color: var(--menu-primary)">
