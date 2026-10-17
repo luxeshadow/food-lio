@@ -130,13 +130,12 @@ const groups = computed(() => [
 .daily-menu-period img { width: 18px; height: 18px; object-fit: contain; }
 .menu-selector { margin-bottom: 32px; }
 .selector-top { display: flex; justify-content: center; margin-bottom: 22px; }
-.period-switch { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 300px; max-width: 100%; gap: 12px; }
-.period-btn { position: relative; display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 58px; padding: 12px 22px; border: 1px solid #e6e1d8; border-radius: 16px; background: #fff; color: #746d61; font: inherit; cursor: pointer; box-shadow: 0 2px 4px rgb(44 34 15 / 3%); transition: border-color .18s, background .18s, box-shadow .18s; }
+.period-switch { display: inline-flex; align-items: center; justify-content: center; gap: 8px; max-width: 100%; }
+.period-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 36px; padding: 7px 14px; border: 0; border-radius: 999px; background: #f0ede7; color: #746d61; font: inherit; cursor: pointer; transition: background .18s, color .18s; }
 .period-icon { display: flex; align-items: center; justify-content: center; }
-.period-btn img { width: 28px; height: 28px; object-fit: contain; }
-.period-label { font-size: 15px; font-weight: 600; line-height: 1.4; }
-.period-btn.active-period { border-color: var(--menu-primary); background: #fff8e9; color: #47381e; box-shadow: 0 0 0 1px var(--menu-primary), 0 4px 12px rgb(166 128 58 / 9%); }
-.period-btn.active-period::after { content: ''; position: absolute; top: 8px; right: 8px; width: 5px; height: 5px; border-radius: 50%; background: #927037; }
+.period-btn img { width: 20px; height: 20px; object-fit: contain; }
+.period-label { font-size: 13px; font-weight: 600; line-height: 1.4; }
+.period-btn.active-period { background: #ead8b2; color: #47381e; }
 .day-list { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
 .day-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; min-width: 0; min-height: 65px; padding: 12px 4px 9px; border: 1px solid transparent; border-radius: 14px; color: #6b655b; background: #f5f3ee; font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; transition: background .2s, color .2s, border-color .2s; }
 .day-indicator { width: 4px; height: 4px; border-radius: 50%; background: currentColor; opacity: .2; }
@@ -144,7 +143,7 @@ const groups = computed(() => [
 .active-day .day-indicator { opacity: 1; }
 @media (hover: hover) {
   .day-btn:not(.active-day):hover { background: #eee7d9; border-color: #ded1b8; }
-  .period-btn:not(.active-period):hover { border-color: #cbb78e; background: #fffdf8; }
+  .period-btn:not(.active-period):hover { background: #e8e3d9; }
 
 }
 .day-btn:focus-visible, .period-btn:focus-visible { outline: 2px solid #78633d; outline-offset: 3px; }

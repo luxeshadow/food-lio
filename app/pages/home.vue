@@ -6,7 +6,7 @@ import { useCategories } from '../features/categorie/presentation/store/use_cate
 import SearchButton from '../core/components/SearchButton.vue'
 
 definePageMeta({ alias: ['/'] })
-const selectedCategory = ref('menu-du-jour')
+const selectedCategory = ref('nourriture')
 const { categories, error: categoryError, loadCategories } = useCategories()
 const categoryName = computed(() => categories.value.find(category => category.slug === selectedCategory.value)?.name ?? '')
 async function loadPageCategories() {
